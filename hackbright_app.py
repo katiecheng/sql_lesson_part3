@@ -21,8 +21,8 @@ def get_student_by_github(github):
 def get_grades_by_student(github):
     query = """SELECT project_title, grade FROM Grades WHERE student_github = ?"""
     DB.execute(query, (github,))
-    row = DB.fetchall()
-    return row
+    rows = DB.fetchall()
+    return rows
 #     return"""\
 # Student: %s
 # Project Grade: %s: %d""" % (github, row[0], row[1])
@@ -53,15 +53,24 @@ def query_project_by_title(title):
 Title: %s
 Description: %s""" % (row[0], row[1])
 
+def query_all_grades_by_project(title):
+    query = """SELECT first_name, last_name, grade, github FROM student_grade_view
+    WHERE project_title = ?"""
+    DB.execute(query, (title,))
+    rows = DB.fetchall()
+    return rows
+
+
 def query_grade_by_project(github, title):
     query = """SELECT first_name, last_name, grade FROM student_grade_view
     WHERE project_title = ? AND github = ?"""
     DB.execute(query, (title,github))
-    row = DB.fetchone()
-    return """\
-Student: %s %s
-Project: %s
-Project grade: %d""" % (row[0], row[1], title, row[2])
+    rows = DB.fetchall()
+    return rows
+#     return """\
+# Student: %s %s
+# Project: %s
+# Project grade: %d""" % (row[0], row[1], title, row[2])
 
 def connect_to_db():
     global DB, CONN
@@ -91,6 +100,8 @@ def main():
             query_grade_by_project(*args)
         elif command == "get_grades_by_student":
             get_grades_by_student(*args)
+        elif command == "query_all_grades_by_project":
+            query_all_grades_by_project(*args)
         # elif command == "new_table":
         #     create_table(*args)
 
